@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { hello } from '../lib/locale.js';
+import { hello } from '../lib/sayHello.js';
 import { capitalize } from '../lib/string.js';
 
 export const helloRouter = Router();
@@ -8,7 +8,7 @@ export const helloRouter = Router();
 helloRouter.get('/:name', (req, res) => {
     res.render(
         'message',
-        {title: `${hello.en}, ${capitalize(req.params.name)}!`}
+        {title: `${hello.en}, ${capitalize(req.params.name)}!`, currentUrl: '/hello' + req.url}
     );
 });
 
@@ -16,6 +16,6 @@ helloRouter.get('/:name', (req, res) => {
 helloRouter.get('/:lang/:name', (req, res) => {
     res.render(
         'message',
-        {title: `${hello[req.params.lang] || hello.en}, ${capitalize(req.params.name)}!`}
+        { title: `${hello[req.params.lang] || hello.en}, ${capitalize(req.params.name)}!`, currentUrl: '/hello' + req.url}
     );
 });

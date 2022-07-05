@@ -4,6 +4,7 @@ import compression from 'compression';
 import { fileURLToPath } from 'url';
 import { dirname, sep } from 'path';
 import { helloRouter } from './routes/hello.js';
+import { goodbyeRouter } from './routes/goodbye.js';
 
 // configuration
 const
@@ -35,18 +36,25 @@ app.use(compression());
 
 // log every request
 app.use((req, res, next) => {
-    console.log(req.url);
+    if (req.url.includes('favicon') || req.url.includes('css')) {
+        // just skip
+    } else {
+        console.log(req.url);
+    }
     next();
 });
 
 // home page route
 app.get('/', (req, res) => {
     // res.send(`<h3>Welcome to Express world!</h3>`);
-    res.render('message', { title: 'Hello from Express'});
+    res.render('message', { title: 'Hello from Express', currentUrl: req.url});
 });
 
 // /hello/ route
 app.use('/hello', helloRouter);
+
+// /goodbye/ route
+app.use('/goodbye', goodbyeRouter);
 
 // serve static assets
 app.use(express.static(cfg.dir.static));
@@ -54,7 +62,7 @@ app.use(express.static(cfg.dir.static));
 // handle 404 error
 app.use((req, res) => {
     // res.status(404).send(`Requested resource doesn't exist`);
-    res.status(404).render('message', { title: 'Not Found!!!'});
+    res.status(404).render('message', { title: 'Not Found!!!', currentUrl: req.url});
 });
 
 // start a server
